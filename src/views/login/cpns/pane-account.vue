@@ -24,10 +24,14 @@ import type { FormRules, ElForm } from "element-plus"
 import { ElMessage } from "element-plus"
 import useLoginStore from "@/store/login/login"
 import type { IAccount } from "@/types"
+import { localCache } from "@/utils/cache"
+
+const CACHE_NAME = "name"
+const CACHE_PASSWORD = "password"
 // account数据
 const account = reactive<IAccount>({
-  name: "",
-  password: ""
+  name: localCache.getCache(CACHE_NAME) ?? "",
+  password: localCache.getCache(CACHE_PASSWORD) ?? ""
 })
 // 校验规则
 const accountRules: FormRules = {
@@ -52,7 +56,7 @@ const accountRules: FormRules = {
 // 账号的登录逻辑
 const formRef = ref<InstanceType<typeof ElForm>>()
 const loginStore = useLoginStore()
-function loginAction() {
+function loginAction(isRemPwd: boolean) {
   formRef.value?.validate((valid) => {
     if (valid) {
       // 1.获取用户输入的账号和密码
@@ -62,7 +66,16 @@ function loginAction() {
       // accountLoginRequest({ name, password }).then((res) => {
       //   console.log(res)
       // })
-      loginStore.loginAccountAction({ name, password })
+      loginStore.loginAccountAction({ name, password }).then(() => {
+        // 判断是否需要记住密码
+        if (isRemPwd) {
+          localCache.setCache(CACHE_NAME, name)
+          localCache.setCache(CACHE_PASSWORD, password)
+        } else {
+          localCache.removeCache(CACHE_NAME)
+          localCache.removeCache(CACHE_PASSWORD)
+        }
+      })
     } else {
       ElMessage.error("请你输入正确的格式再操作哦~~")
     }
