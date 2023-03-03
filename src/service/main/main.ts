@@ -17,3 +17,10 @@ export function newUserData(userInfo: any) {
     data: userInfo
   })
 }
+
+export function editUserData(id: number, userInfo: any) {
+  return hyRequest.patch({
+    url: `/users/${id}`,
+    data: userInfo
+  })
+}

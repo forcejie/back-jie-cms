@@ -63,6 +63,7 @@
               icon="Edit"
               text
               style="background-color: lightpink"
+              @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
@@ -97,11 +98,10 @@
 import { storeToRefs } from "pinia"
 import useSystemStore from "@/store/main/system/system"
 import { formatUTC } from "@/utils/format"
-
 import { ref } from "vue"
 
 // 定义事件
-const emit = defineEmits(["newClick"])
+const emit = defineEmits(["newClick", "editClick"])
 
 // 1.发起action， 请求usersList的数据
 const systemStore = useSystemStore()
@@ -134,12 +134,16 @@ function fetchUserListData(formData: any = {}) {
   systemStore.postUsersListAction(queryInfo)
 }
 
+// 删除/新建/编辑
 function handleDelete(id: number) {
   systemStore.deleteUserByIdAction(id)
 }
 function handleNewUser() {
-  console.log("新建用户")
+  // console.log("新建用户")
   emit("newClick")
+}
+function handleEdit(itemData: any) {
+  emit("editClick", itemData)
 }
 defineExpose({ fetchUserListData })
 </script>

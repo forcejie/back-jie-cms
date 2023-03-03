@@ -4,7 +4,11 @@
       @query-click="handleQuery"
       @reset-click="handleRefresh"
     ></user-search>
-    <user-content ref="contentRef" @new-click="handleNewClick"></user-content>
+    <user-content
+      ref="contentRef"
+      @new-click="handleNewClick"
+      @edit-click="handleEditClick"
+    ></user-content>
     <user-modal ref="modalRef"></user-modal>
   </div>
 </template>
@@ -19,7 +23,7 @@ import UserModal from "./cpns/user-modal.vue"
 const contentRef = ref<InstanceType<typeof UserContent>>()
 function handleQuery(formData: any) {
   console.log(formData)
-  contentRef.value?.fetchUserListData()
+  contentRef.value?.fetchUserListData(formData)
 }
 function handleRefresh() {
   contentRef.value?.fetchUserListData()
@@ -28,6 +32,9 @@ function handleRefresh() {
 const modalRef = ref<InstanceType<typeof UserModal>>()
 function handleNewClick() {
   modalRef.value?.setModalVisible()
+}
+function handleEditClick(itemData: any) {
+  modalRef.value?.setModalVisible(false, itemData)
 }
 </script>
 
