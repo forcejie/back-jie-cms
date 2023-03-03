@@ -9,7 +9,7 @@
     <!-- 2.menu -->
     <div class="menu">
       <el-menu
-        default-active="3"
+        :default-active="defaultActive"
         text-color="#b7bdc3"
         :collapse="isFold"
         active-text-color="#fff"
@@ -75,7 +75,9 @@
 
 <script setup lang="ts">
 import useLoginStore from "@/store/login/login"
-import { useRouter } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
+import { computed } from "vue"
+import { mapPathToMenu } from "@/utils/map-menus"
 // 定义props 接收父组件传递的数据
 defineProps({
   isFold: {
@@ -94,6 +96,13 @@ function handleClick(item: any) {
   const url = item.url
   router.push(url)
 }
+
+// elmenu的默认菜单
+const route = useRoute()
+const defaultActive = computed(() => {
+  const pathMenu = mapPathToMenu(route.path, userMenus)
+  return pathMenu.id + ""
+})
 </script>
 
 <style lang="less" scoped>
